@@ -1,0 +1,86 @@
+<br />
+<div align="center">
+  <a href="https://chat.hibiscushealth.com">
+    <img src="public/hibiscus-bot-logo.png" alt="HibiscusBot Logo" width="75" height="75">
+  </a>
+
+  <h3 align="center"><b>HibiscusBot</b></h3>
+
+  <p align="center">
+    HibiscusBot is Hibiscus Health's propriety large language model fine-tuned to offer personalized nutritional support and customized meal plans!
+    <br />
+    <a href="https://chat.hibiscushealth.com"><strong>Try it out »</strong></a>
+    <br />
+    <br />
+  </p>
+
+  <p align="center">
+    <img src="https://github.com/Hibiscus-Health/hibiscus-bot/blob/dev/demo/hibiscus-bot-demo.gif" alt="HibiscusBot Demo" width="600">
+</p>
+
+</div>
+
+## Background 
+HibiscusBot is an application developed on the [Chainlit](https://github.com/Chainlit/chainlit) framework and powered by a foundation model provided by [AWS Bedrock](https://aws.amazon.com/bedrock/). It's a specialized large language model optimized for nutritional support and meal planning tasks.
+
+## Getting Started
+
+### Prerequisites
+
+Before you begin, ensure you have the following prerequisites:
+
+- Python 3.7 or higher
+- AWS CLI configured with appropriate permissions (request AWS keys from <b>[@aaanthonyyy](https://github.com/aaanthonyyy)</b> or <b>[@hibiscusdev](https://github.com/hibiscusdev)</b> if needed)
+
+### Configuring AWS CLI
+1. Install the AWS CLI by following the official [instructions](https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html)
+2. Configure the AWS CLI with the Hibiscus AWS credentials
+```sh
+$ export AWS_ACCESS_KEY_ID=🔒
+$ export AWS_SECRET_ACCESS_KEY=🔒
+$ export AWS_DEFAULT_REGION=us-west-2
+```
+
+### Installation
+To install and set up HibiscusBot:
+1. Clone the repo to your local machine:
+```sh
+$ git clone https://github.com/Hibiscus-Health/hibiscus-bot
+```
+
+2. Set up a virtual environment with `venv`
+```sh
+$ python -m venv venv
+$ source venv/bin/activate
+```
+
+3. Install the required dependencies
+```sh
+$ pip install -r requirements.txt
+```
+
+
+4. Run the Chainlit framework
+```sh
+$ chainlit run app.py
+```
+
+The terminal sould then say something like
+```
+2024-07-18 00:24:12 - Your app is available at http://localhost:8000
+
+2024-07-18 00:24:14 - Translated markdown file for en-US not found. Defaulting to chainlit.md.
+
+2024-07-18 00:24:14 - Found credentials in shared credentials file: ~/.aws/credentials
+```
+5. Interact with HibiscusBot and ensure it provides a quick and reasonable response. 
+
+## Contributing
+To contribute to HibiscusBot, please follow these steps:
+
+1. Fork the repository.
+2. Create a new branch (git checkout -b feature/your-feature).
+3. Commit your changes (git commit -m 'Add some feature').
+4. Push to the branch (git push origin feature/your-feature).
+5. Open a pull request.
+6. Request a code review from <b>[@aaanthonyyy](https://github.com/aaanthonyyy)</b> or <b>[@hibiscusdev](https://github.com/hibiscusdev)</b>

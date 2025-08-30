@@ -3,7 +3,7 @@ from langchain.memory import ConversationBufferWindowMemory
 from langchain.chains import ConversationChain
 from langchain.prompts import PromptTemplate
 from langchain.globals import set_debug
-from agent_factory import get_gen_info_agent
+from agent_factory import get_agent
 
 set_debug(True)
 
@@ -39,23 +39,9 @@ async def on_action(action):
 
 @cl.on_chat_start
 async def main():
-    # bedrock = boto3.client("bedrock", region_name="us-east-1")
-
-    # memory = ConversationBufferWindowMemory(k=15, memory_key="history")
-    # cl.user_session.set("memory", memory)
-
-    # llm = ChatBedrock(
-    #     client=boto3.client(
-    #         "bedrock-runtime",
-    #         region_name="us-east-1",
-    #     ),
-    #     model_id="meta.llama3-8b-instruct-v1:0",
-    #     model_kwargs={"temperature": 0.4, "max_gen_len": 1024,},
-    # )
-
-    # cl.user_session.set("llm", llm)
-
-    agent = get_gen_info_agent("default_user")
+    # Get info about which agent to use
+    # Get relevant supporting docs
+    agent = get_agent("default_user")
     llm = agent.llm
     memory = agent.memory
 

@@ -1,10 +1,8 @@
-# (Agent logic: RAG + Order Lookup tool)
-
 # customer_support_agent.py
 
 import os
 import chainlit as cl
-from langchain_openai import ChatOpenAI
+# from langchain.chat_models import ChatOpenAI
 from langchain.agents import initialize_agent, AgentType, Tool
 from langchain.memory import ConversationBufferWindowMemory
 from langchain_community.vectorstores import Chroma
@@ -12,6 +10,7 @@ from langchain_community.embeddings import OpenAIEmbeddings
 from langchain_community.document_loaders import TextLoader
 import boto3
 from langchain_aws import ChatBedrock
+from langchain_aws.embeddings import BedrockEmbeddings
 
 def load_support_docs(docs_dir="gen_info_docs"):
     all_docs = []
@@ -26,7 +25,10 @@ def load_support_docs(docs_dir="gen_info_docs"):
     return all_docs
 
 def build_retriever(docs):
-    embeddings = OpenAIEmbeddings()
+    embeddings = BedrockEmbeddings(
+        model_id="amazon.titan-embed-text-v1",
+        region_name="us-east-1"
+    )
     vectordb = Chroma.from_documents(docs, embeddings, persist_directory="chroma_db")
     return vectordb.as_retriever()
 
@@ -59,17 +61,14 @@ def create_agent(retriever):
     rag_tool = Tool(
         name="KnowledgeBaseSearch",
         func=lambda query: rag_tool_func(query, retriever),
-        description="Use this tool to answer user questions about general information on HH"
+        description="Use this tool to answer general questions about Hibiscus Health"
     )
     # order_lookup_tool = Tool(
     #     name="OrderLookup",
     #     func=lambda order_id: order_lookup_tool_func(order_id, orders),
     #     description="Use this tool to look up the status of a customer's order by order ID. The user must provide an order ID."
     # )
-
-    memory = ConversationBufferWindowMemory(k=15, memory_key="history")
-    cl.user_session.set("memory", memory)
-
+    bedrock = boto3.client("bedrock", region_name="us-east-1")
     llm = ChatBedrock(
         client=boto3.client(
             "bedrock-runtime",
@@ -78,6 +77,9 @@ def create_agent(retriever):
         model_id="meta.llama3-8b-instruct-v1:0",
         model_kwargs={"temperature": 0.4, "max_gen_len": 1024,},
     )
+    cl.user_session.set("llm", llm)
+    memory = ConversationBufferWindowMemory(k=15, memory_key="history")
+    cl.user_session.set("memory", memory)
     # llm = ChatOpenAI(model="gpt-4o-mini", temperature=0)
     # memory = ConversationBufferMemory(memory_key="chat_history", return_messages=True)
     agent = initialize_agent(

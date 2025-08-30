@@ -1,17 +1,17 @@
 # agent_factory.py
 
 import chainlit as cl
-from gen_info_agent import load_support_docs, build_retriever, create_agent
+from hh_about_agent import load_support_docs, build_retriever, create_agent
 
-# def get_user_agent(username, orders):
 def get_gen_info_agent(username):
     session = cl.user_session
-    if "retriever" not in session:
-        support_docs = load_support_docs("docs")
-        session["retriever"] = build_retriever(support_docs)
-    if "user_agents" not in session:
-        session["user_agents"] = {}
-    if username not in session["user_agents"]:
-        # session["user_agents"][username] = create_agent(session["retriever"], orders)
-        session["user_agents"][username] = create_agent(session["retriever"])
-    return session["user_agents"][username]
+    if not session.get("retriever"):
+        support_docs = load_support_docs("about_hh_docs")
+        session.set("retriever", build_retriever(support_docs))
+    if not session.get("user_agents"):
+        session.set("user_agents", {})
+    user_agents = session.get("user_agents")
+    if username not in user_agents:
+        user_agents[username] = create_agent(session.get("retriever"))
+        session.set("user_agents", user_agents)
+    return user_agents[username]

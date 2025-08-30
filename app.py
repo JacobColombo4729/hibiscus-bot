@@ -72,7 +72,7 @@ async def on_message(message: cl.Message):
 
     print(message)
 
-    
+
     # Call the chain asynchronously
     res = await conversation.ainvoke(message.content)
 

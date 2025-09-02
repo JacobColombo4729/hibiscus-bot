@@ -3,12 +3,17 @@
 import os
 import chainlit as cl
 # from langchain.chat_models import ChatOpenAI
-from langchain.agents import initialize_agent, AgentType, Tool
-from langchain.memory import ConversationBufferWindowMemory
+# from langchain.agents import initialize_agent, AgentType, Tool
+# from langchain.memory import ConversationBufferWindowMemory
 from langchain_community.vectorstores import Chroma
-# from langchain_community.embeddings import OpenAIEmbeddings
+from langchain_community.embeddings import OpenAIEmbeddings
 from langchain_community.document_loaders import TextLoader
 from langchain_aws.embeddings import BedrockEmbeddings
+
+from dotenv import load_dotenv
+load_dotenv()
+
+OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 
 def load_support_docs(docs_dir="gen_info_docs"):
     all_docs = []
@@ -23,9 +28,13 @@ def load_support_docs(docs_dir="gen_info_docs"):
     return all_docs
 
 def build_retriever(docs):
-    embedding_function = BedrockEmbeddings(
-        model_id="amazon.titan-embed-text-v1",
-        region_name="us-east-1"
+    # embedding_function = BedrockEmbeddings(
+    #     model_id="amazon.titan-embed-text-v1",
+    #     region_name="us-east-1"
+    # )
+    embedding_function = OpenAIEmbeddings(
+        model="text-embedding-3-large",
+        api_key=OPENAI_API_KEY,
     )
     vectordb = Chroma.from_documents(
         documents=docs,
@@ -69,18 +78,4 @@ def rag_tool_func(query, retriever):
     # )
     # return agent
 
-from agent_tools import load_support_docs, build_retriever, create_agent
 
-def get_agent(username):
-    session = cl.user_session
-    if not session.get("retriever"):
-        # Update load_support_docs to actually load documents
-        support_docs = load_support_docs()
-        session.set("retriever", build_retriever(support_docs))
-    if not session.get("user_agents"):
-        session.set("user_agents", {})
-    user_agents = session.get("user_agents")
-    if username not in user_agents:
-        user_agents[username] = create_agent(session.get("retriever"))
-        session.set("user_agents", user_agents)
-    return user_agents[username]

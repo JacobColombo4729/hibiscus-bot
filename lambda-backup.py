@@ -5,9 +5,13 @@ from langchain.memory import ConversationBufferWindowMemory
 from langchain.chains import ConversationChain
 from langchain.prompts import PromptTemplate
 
+# This is the required entry point when deploying a python function on AWS Lambda
+# This is automatically called by AWS Lambda when the function is invoked
+# event is the input data
+# context is the runtime metadata
 def lambda_handler(event, context):
 
-
+    # This is the required client for AWS Bedrock
     bedrock = boto3.client("bedrock-runtime", region_name="us-east-1")
 
     user_prompt = event.get("prompt", "Default prompt text if not provided.")

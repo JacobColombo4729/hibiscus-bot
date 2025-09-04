@@ -20,3 +20,4 @@ venv.bak/
 /chroma_db
 __pycache__/
 .idea/
+.env

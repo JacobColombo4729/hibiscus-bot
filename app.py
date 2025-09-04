@@ -1,65 +1,37 @@
-from langchain_aws import ChatBedrock
-from langchain.memory import ConversationBufferWindowMemory
-from langchain.chains import ConversationChain
-from langchain.prompts import PromptTemplate
-from langchain.globals import set_debug
-# from agent import get_agent
-from embeddings import retrieve_relevant_chunks, meal_planning_collection
-from prompts import supervisor_prompt_template
+"""
+This module serves as the main entry point for the Hibiscus Bot, a personal wellness assistant.
 
-set_debug(True)
-
+It uses the chainlit library to create a chat interface and handles the chat logic by 
+interacting with a SupervisorAgent that coordinates various specialized agents.
+"""
 import chainlit as cl
-import boto3
-
-def set_custom_prompt():
-    prompt = PromptTemplate(input_variables=['history', 'input'], template=supervisor_prompt_template)
-    return prompt
-
-@cl.action_callback("action_button")
-async def on_action(action):
-    await cl.Message(content=f"Executed {action.name}").send()
-    await action.remove()
-
+from langchain_core.messages import HumanMessage
+from agents.supervisor_agent import SupervisorAgent
 
 @cl.on_chat_start
 async def main():
+    """
+    Initializes and sets up the chat session when a user starts a new chat.
 
-    llm = ChatBedrock(
-        client=boto3.client(
-            "bedrock-runtime",
-            region_name="us-east-1",
-        ),
-        model_id="meta.llama3-8b-instruct-v1:0",
-        model_kwargs={"temperature": 0.4, "max_gen_len": 1024,},
-    )
-
-    memory = ConversationBufferWindowMemory(k=15)
-
-    conversation = ConversationChain(
-        prompt=set_custom_prompt(),
-        llm=llm,
-        memory=memory,
-        verbose=False,
-    )
-    cl.user_session.set("llm_chain", conversation)
-
+    This function creates a new `SupervisorAgent`, stores it in the user's session, 
+    and sends a welcome message to the user.
+    """
+    supervisor = SupervisorAgent()
+    cl.user_session.set("supervisor", supervisor)
+    await cl.Message(content="Hello! I am Hibiscus Bot, your personal wellness assistant. How can I help you today?").send()
 
 @cl.on_message
 async def on_message(message: cl.Message):
+    """
+    Handles incoming messages from the user.
 
-    # llm = cl.user_session.get("llm")
-    # memory = cl.user_session.get("memory")
-    conversation = cl.user_session.get("llm_chain")
+    This function retrieves the `SupervisorAgent` from the user's session, passes the 
+    user's message to the agent's `run` method, and sends the agent's reply back to the user.
 
-    print(message)
-
-    k_chunks = retrieve_relevant_chunks(message.content, meal_planning_collection, 6)
-    print("k_chunks: ", k_chunks)
-    
-    # Call the chain asynchronously
-    res = await conversation.ainvoke(f"Here is the user's question: {message.content}\n\nHere are the relevant chunks: {k_chunks}, Respond in a friendly and helpful manner. If you don't know the answer, say you don't know. Do not hallucinate.")
-
-    answer = res["response"]
-    await cl.Message(content=answer).send()
+    Args:
+        message (cl.Message): The message object from the user.
+    """
+    supervisor = cl.user_session.get("supervisor")
+    reply = await cl.make_async(supervisor.run)(message.content)
+    await cl.Message(content=reply).send()
 

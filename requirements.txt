@@ -1,19 +1,17 @@
-# This is a minimal, stable set of requirements to resolve dependency conflicts.
-
-chainlit==1.1.202
-pydantic<2
-langchain==0.1.20
-langchain-core==0.1.52
-langgraph==0.0.48
-langchain-openai==0.1.0
+# The latest stable, compatible versions as of September 2025
+chainlit==1.1.304
+langchain==0.2.5
+langchain-core==0.2.15
+langgraph==0.1.8
+langchain-openai==0.1.8
 openai>=1.10.0
 python-dotenv==1.0.1
 PyPDF2==3.0.1
-fastapi<0.111.0
+fastapi
 uvicorn
 boto3
 langchain-aws
-langchain-community
+langchain-community==0.2.5
 typing-extensions
-
-# Add other specific packages you need below this line
+chromadb
+ollama

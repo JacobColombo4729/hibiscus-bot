@@ -13,7 +13,7 @@ def lambda_handler(event, context):
 
     # This is the required client for AWS Bedrock
     bedrock = boto3.client("bedrock-runtime", region_name="us-east-1")
-
+    # Pulls the prompt from the event
     user_prompt = event.get("prompt", "Default prompt text if not provided.")
 
 

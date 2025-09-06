@@ -9,7 +9,7 @@ from typing import Literal
 from langgraph.prebuilt import create_react_agent
 from langchain_core.prompts.chat import ChatPromptTemplate
 from langchain_core.messages import AIMessage
-from langchain_openai import ChatOpenAI
+from langchain_ollama import ChatOllama
 from .state import State
 
 
@@ -22,7 +22,7 @@ class NutritionAgent:
     a LangGraph workflow. It uses a predefined system prompt to guide its behavior
     and can be equipped with tools to perform specific actions (e.g., fetching data).
     """
-    def __init__(self, llm_model: ChatOpenAI):
+    def __init__(self, llm_model: ChatOllama):
         """
         Initializes the NutritionAgent.
 

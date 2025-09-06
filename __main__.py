@@ -1,9 +1,9 @@
-import chainlit as cl
+import uvicorn
 
 def main():
     # This function is the entry point for the application.
-    # You can run it with `python -m src`.
-    cl.run(host="0.0.0.0", port=8000, headless=False, watch=True)
+    # It starts the Uvicorn server to run the FastAPI app.
+    uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=True)
 
 if __name__ == "__main__":
     main()

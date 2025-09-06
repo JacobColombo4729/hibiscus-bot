@@ -38,7 +38,6 @@ Follow these steps to get a local copy of HibiscusBot up and running.
 ### Prerequisites
 
 - Python 3.9 or higher
-- An [OpenAI API Key](https://platform.openai.com/account/api-keys)
 
 ### Installation
 
@@ -59,22 +58,15 @@ Follow these steps to get a local copy of HibiscusBot up and running.
     pip install -r requirements.txt
     ```
 
-4.  **Set up your environment variables:**
-    -   Create a file named `.env` in the root of the project.
-    -   Add your OpenAI API key to the `.env` file:
-        ```
-        OPENAI_API_KEY='your_openai_api_key'
-        ```
-
-5.  **Ingest the knowledge base (optional):**
+4.  **Ingest the knowledge base (optional):**
     If you want the bot to have access to the documents in the `docs/` directory, you need to run the embedding script. This will process the documents, create embeddings, and store them in the `chroma_db` vector database.
     ```sh
     python -m utils.embeddings
     ```
 
-6.  **Run the application:**
+5.  **Run the application:**
     ```sh
-    chainlit run app.py
+    python -m hibiscus-bot
     ```
     Your application should now be running and accessible at `http://localhost:8000`.
 
@@ -99,8 +91,7 @@ hibiscus-bot/
 │   ├── embeddings.py     # Handles the RAG implementation (chunking, embedding, retrieval).
 │   └── prompts.py        # Contains the prompt templates for the agents.
 ├── .gitignore
-├── app.py                # The main entry point for the Chainlit application.
-├── chainlit.md           # The introductory content for the Chainlit UI.
+├── main.py               # The main entry point for the FastAPI application.
 ├── pyproject.toml
 ├── readme.md
 └── requirements.txt
@@ -108,7 +99,7 @@ hibiscus-bot/
 
 ## 🛠️ Technologies Used
 
--   [Chainlit](https://docs.chainlit.io/): For building the chat interface.
+-   [FastAPI](https://fastapi.tiangolo.com/): For building the web API.
 -   [LangChain](https://www.langchain.com/): For building the agentic system and interacting with LLMs.
 -   [LangGraph](https://langchain-ai.github.io/langgraph/): For creating the stateful, multi-agent workflow.
 -   [OpenAI](https://openai.com/): For the underlying large language models.

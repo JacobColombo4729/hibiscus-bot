@@ -10,24 +10,19 @@ import glob
 import chromadb
 import ollama
 from PyPDF2 import PdfReader
-from langchain_openai import OpenAIEmbeddings
-from dotenv import load_dotenv
 import os
-
-load_dotenv()
-OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 
 # Initialize the ChromaDB client and create/get collections for various wellness topics.
 client = chromadb.PersistentClient(path="./chroma_db")
 
-meal_planning_collection = client.get_or_create_collection("meal_planning")
-fitness_coach_collection = client.get_or_create_collection("fitness_coach")
-mental_wellness_collection = client.get_or_create_collection("mental_wellness")
-sleep_coach_collection = client.get_or_create_collection("sleep_coach")
-workplace_ergonomics_collection = client.get_or_create_collection("workplace_ergonomics")
-care_navigator_collection = client.get_or_create_collection("care_navigator")
-hydration_coach_collection = client.get_or_create_collection("hydration_coach")
-wellness_analytics_collection = client.get_or_create_collection("wellness_analytics")
+sample_collection = client.get_or_create_collection("sample_collection")
+# fitness_coach_collection = client.get_or_create_collection("fitness_coach")
+# mental_wellness_collection = client.get_or_create_collection("mental_wellness")
+# sleep_coach_collection = client.get_or_create_collection("sleep_coach")
+# workplace_ergonomics_collection = client.get_or_create_collection("workplace_ergonomics")
+# care_navigator_collection = client.get_or_create_collection("care_navigator")
+# hydration_coach_collection = client.get_or_create_collection("hydration_coach")
+# wellness_analytics_collection = client.get_or_create_collection("wellness_analytics")
 
 def get_files(path, exts=('.txt', '.html', '.pdf')):
     """
@@ -113,7 +108,7 @@ def ingest_corpus(dir, collection):
             docs.append(chunk)
             ids.append(f"{os.path.basename(file)}_{i}")
     # Ingests docs returns the list of embeddings for the entire corpus, (List[List[float]]) List[float] is a single embedding
-    embeddings = OpenAIEmbeddings().embed_documents(docs)
+    embeddings = ollama.embeddings(model="nomic-embed-text", input=docs)
     # embeddings = BedrockEmbeddings(model_id="amazon.titan-embed-text-v1", region_name="us-east-1").embed_documents(docs)
     # this makes a Chroma collection
     collection.add(documents=docs, ids=ids, embeddings=embeddings)
@@ -134,7 +129,7 @@ def retrieve_relevant_chunks(query, collection, k):
         list: A list of tuples, where each tuple contains a relevant chunk of text
               and its corresponding ID.
     """
-    embedding = OpenAIEmbeddings().embed_query(query)
+    embedding = ollama.embeddings(model="nomic-embed-text", input=query)
     # embedding = BedrockEmbeddings(model_id="amazon.titan-embed-text-v1", region_name="us-east-1").embed_query(query)
     # searches chromadb for the top k most relevant items in collection
     results = collection.query(query_embeddings=[embedding], n_results=k)
@@ -152,7 +147,7 @@ if __name__ == "__main__":
     """
 
     corpus_map = {
-        "docs/MealPlanningCorpus": meal_planning_collection,
+        "data/sample_collection": sample_collection,
     }
 
     print("--- Starting Corpus Ingestion ---")

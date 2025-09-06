@@ -1,14 +1,13 @@
 # The latest stable, compatible versions as of September 2025
-chainlit==1.1.304
 langchain==0.2.5
 langchain-core==0.2.15
 langgraph==0.1.8
-langchain-openai==0.1.8
-openai>=1.10.0
+langchain-groq==0.1.8
+groq>=1.10.0
 python-dotenv==1.0.1
 PyPDF2==3.0.1
-fastapi
-uvicorn
+fastapi==0.111.0
+uvicorn==0.30.1
 boto3
 langchain-aws
 langchain-community==0.2.5

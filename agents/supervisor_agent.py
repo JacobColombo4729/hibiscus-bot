@@ -15,13 +15,13 @@ from .nutrition_agent import NutritionAgent
 from .fitness_agent import FitnessAgent
 from .general_agent import GeneralAgent  
 from .state import State
-from langchain_openai import ChatOpenAI
+from langchain_groq import ChatGroq
 from dotenv import load_dotenv
 from langgraph.checkpoint.memory import MemorySaver
-from utils.embeddings import retrieve_relevant_chunks, meal_planning_collection
+from utils.embeddings import retrieve_relevant_chunks, sample_data_collection
 
 load_dotenv()
-OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
+GROQ_API_KEY = os.getenv("GROQ_API_KEY")
 
 class SupervisorAgent:
     """
@@ -39,8 +39,8 @@ class SupervisorAgent:
         (NutritionAgent, FitnessAgent, and GeneralAgent), passing the LLM to them.
         """
         # The supervisor is the single source of truth for the LLM
-        self.llm_model = ChatOpenAI(
-            model="gpt-4o",
+        self.llm_model = ChatGroq(
+            model="llama-3.1-8b-instant",
             temperature=0.1,
         )
 
@@ -66,7 +66,7 @@ class SupervisorAgent:
         print("---SUPERVISOR: DECIDING NEXT STEP---")
         
         # Retrieve relevant chunks
-        relevant_chunks = retrieve_relevant_chunks(user_input, meal_planning_collection, 3)
+        relevant_chunks = retrieve_relevant_chunks(user_input, sample_data_collection, 3)
         chunks_text = "\n".join([chunk for chunk, id in relevant_chunks])
         
         # Create a prompt for reply

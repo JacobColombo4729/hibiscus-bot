@@ -38,7 +38,8 @@ Follow these steps to get a local copy of HibiscusBot up and running.
 ### Prerequisites
 
 - Python 3.9 or higher
-- An [OpenAI API Key](https://platform.openai.com/account/api-keys)
+- A [GROQ API Key](https://platform.openai.com/account/api-keys)
+- A [HUGGING FACE API KEY](https://platform.openai.com/account/api-keys)
 
 ### Installation
 
@@ -61,9 +62,10 @@ Follow these steps to get a local copy of HibiscusBot up and running.
 
 4.  **Set up your environment variables:**
     -   Create a file named `.env` in the root of the project.
-    -   Add your OpenAI API key to the `.env` file:
+    -   Add your GROQ API KEY and HUGGING FACE API KEY to the `.env` file:
         ```
-        OPENAI_API_KEY='your_openai_api_key'
+        GROQ_API_KEY='your_groq_api_key'
+        HF_TOKEN='your_huggingface_token'
         ```
 
 5.  **Ingest the knowledge base (optional):**
@@ -74,6 +76,8 @@ Follow these steps to get a local copy of HibiscusBot up and running.
 
 6.  **Run the application:**
     ```sh
+    python utils/embeddings.py
+
     chainlit run app.py
     ```
     Your application should now be running and accessible at `http://localhost:8000`.

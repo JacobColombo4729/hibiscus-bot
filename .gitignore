@@ -1,0 +1,24 @@
+#-*--  VIM  -*-*-
+#
+###-  Python  -###
+*.py[cod]
+*$py.class
+
+###-  VirtualEnv  -###
+.env/
+.venv/
+ENV/
+env/
+env.bak/
+venv/
+venv.bak/
+
+###-  System  -###
+.DS_Store
+
+###-  Misc  -###
+chroma_db
+__pycache__
+.idea/
+.env
+

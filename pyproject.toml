@@ -1,0 +1,25 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "hibiscus-bot"
+version = "0.1.0"
+description = "A chatbot for health and fitness."
+readme = "readme.md"
+requires-python = ">=3.8"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+dependencies = [
+
+]
+
+[project.urls]
+"Homepage" = "https://github.com/your-username/hibiscus-bot2"
+"Bug Tracker" = "https://github.com/your-username/hibiscus-bot2/issues"
+
+[tool.setuptools.packages.find]
+where = ["src"]

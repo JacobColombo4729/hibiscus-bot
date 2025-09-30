@@ -38,18 +38,17 @@ supervisor_prompt_template = ChatPromptTemplate.from_messages([
 
     Specialized agents available:
     - Meal Planning and Nutrition Agent → diet, meal prep, nutrition guidance
-    - Fitness Coaching Agent → workouts, training, physical activity
-    - Sleep Coaching Agent → sleep hygiene, routines, circadian rhythm
+    - General Agent → general questions, small talk, casual queries
 
     Rules:
     - Be concise and friendly, in the tone of a helpful health host.
     - If the query is small talk or casual (e.g. "hi", "tell me a joke"), answer directly as Supervisor and assign no agents.
     - You may assign 0 agents if irrelevant, 1 agent if clear, or multiple agents if the query spans several domains.
     - Always provide reasoning and output in JSON format:
-        {
+        {{
           "reasoning": "...",
-          "agents": ["Meal Planning Agent", "Sleep Coaching Agent"]
-        }
+          "agents": ["Meal Planning and Nutrition Agent", "General Agent"]
+        }}
     """),
     ("system", "Conversation so far:\n{history}"),
     ("human", "{input}")

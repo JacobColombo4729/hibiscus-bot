@@ -15,10 +15,14 @@ app = FastAPI(
 
 class ChatMessage(BaseModel):
     message: str
+    history: str = ""
+
+class ChatResponse(BaseModel):
+    reply: str
 
 supervisor = SupervisorAgent()
 
-@app.post("/chat")
+@app.post("/chat", response_model=ChatResponse)
 async def chat(item: ChatMessage):
     """
     Handles incoming chat messages from the user.
@@ -27,13 +31,13 @@ async def chat(item: ChatMessage):
     and returns the agent's reply.
 
     Args:
-        item (ChatMessage): The request body containing the user's message.
+        item (ChatMessage): The request body containing the user's message and optional history.
 
     Returns:
-        dict: A dictionary containing the bot's reply.
+        ChatResponse: A response object containing the bot's reply.
     """
-    reply = supervisor.run(item.message)
-    return {"reply": reply}
+    reply = supervisor.run(item.message, item.history)
+    return ChatResponse(reply=reply)
 
 @app.get("/")
 async def root():

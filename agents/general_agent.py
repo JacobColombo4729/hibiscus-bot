@@ -5,66 +5,50 @@ and conversations that do not fall into the specialized domains of nutrition or 
 The GeneralAgent is designed to be a "catch-all" agent in the agentic system, providing helpful 
 advice and engaging in friendly conversation.
 """
-from typing import Literal
-from langgraph.prebuilt import create_react_agent
 from langchain_core.prompts.chat import ChatPromptTemplate
-from langchain_core.messages import AIMessage
 from langchain_groq import ChatGroq
-from .state import State
 
 class GeneralAgent:
     """
     A general-purpose agent for handling non-specialized wellness queries.
 
-    This agent is initialized with a language model and is designed to work within
-    a LangGraph workflow. It uses a predefined system prompt to guide its behavior
-    and does not have any specialized tools.
+    This agent is initialized with a language model and provides helpful responses
+    for general wellness questions and casual conversation.
     """
     def __init__(self, llm_model: ChatGroq):
         """
         Initializes the GeneralAgent.
 
         Args:
-            llm_model (ChatOpenAI): The language model that the agent will use to 
-                                    process queries and generate responses.
+            llm_model (ChatGroq): The language model that the agent will use to 
+                                 process queries and generate responses.
         """
         self.llm_model = llm_model
         
-        system_prompt = (
+        self.system_prompt = (
             "You are a general wellness assistant. Handle queries that do not fall into specific categories "
-            "like nutrition or fitness. Provide helpful, general advice and engage in friendly conversation."
+            "like nutrition or fitness. Provide helpful, general advice and engage in friendly conversation. "
+            "Be warm, supportive, and encouraging in your responses."
         )
-        
-        prompt = ChatPromptTemplate.from_messages(
-            [("system", system_prompt), ("placeholder", "{messages}")]
-        )
-        
-        # The general agent has no specialized tools.
-        tools = []
-        
-        self.agent = create_react_agent(model=self.llm_model, tools=tools, messages_modifier=prompt)
 
-    def run(self, state: State) -> dict:
+    def run(self, user_input: str) -> str:
         """
         Executes the main logic of the GeneralAgent.
 
-        This method is called when the agent is activated within the LangGraph workflow.
-        It processes the current state, which includes the conversation history, and 
-        returns a dictionary with the agent's response.
+        This method processes the user input and returns a response string.
 
         Args:
-            state (State): The current state of the conversation graph.
+            user_input (str): The user's input string.
 
         Returns:
-            dict: A dictionary containing the AIMessage with the agent's response,
-                  which will be added to the conversation state.
+            str: The agent's response as a string.
         """
         print("---EXECUTING GENERAL AGENT---")
-        result = self.agent.invoke(state)
         
-        # Update the state with the AIMessage from this agent's execution
-        return {
-            "messages": [
-                AIMessage(content=result["messages"][-1].content, name="general_node")
-            ]
-        }
+        # Create a simple prompt with the system message and user input
+        prompt = f"{self.system_prompt}\n\nUser: {user_input}\nAssistant:"
+        
+        # Invoke the LLM directly
+        response = self.llm_model.invoke(prompt)
+        
+        return response.content

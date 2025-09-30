@@ -18,6 +18,7 @@ async def main():
     """
     supervisor = SupervisorAgent()
     cl.user_session.set("supervisor", supervisor)
+    cl.user_session.set("history", "")
     await cl.Message(content="Hello! I am Hibiscus Bot, your personal wellness assistant. How can I help you today?").send()
 
 @cl.on_message
@@ -32,6 +33,16 @@ async def on_message(message: cl.Message):
         message (cl.Message): The message object from the user.
     """
     supervisor = cl.user_session.get("supervisor")
-    reply = await cl.make_async(supervisor.run)(message.content)
+    
+    # Get conversation history
+    history = cl.user_session.get("history", "")
+    
+    # Get the agent's response
+    reply = await cl.make_async(supervisor.run)(message.content, history)
+    
+    # Update conversation history
+    history += f"Human: {message.content}\nAssistant: {reply}\n"
+    cl.user_session.set("history", history)
+    
     await cl.Message(content=reply).send()
 

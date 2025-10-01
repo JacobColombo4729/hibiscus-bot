@@ -152,7 +152,7 @@ if __name__ == "__main__":
     """
 
     corpus_map = {
-        "data/sample_data": sample_data_collection,
+        "data/hibiscus-corpus": sample_data_collection,
     }
 
     print("--- Starting Corpus Ingestion ---")
